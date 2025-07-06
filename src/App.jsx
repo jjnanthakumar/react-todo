@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Form from './components/Form';
-import TodoList from './components/Todolist';
+import Form from './components/Form.jsx';
+import TodoList from './components/Todolist.jsx';
 function App() {
   useEffect(() => {
     getLocalData();
