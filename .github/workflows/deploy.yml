@@ -1,0 +1,51 @@
+name: Deploy React App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Deploy only when pushing to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22" # Specify the Node.js version
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+            version: 10
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: pnpm install
+
+      # Step 4: Build the React app
+      - name: Build React App
+        run: pnpm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist/'
+              # Deployment job
+  deploy:
+    permissions:
+        id-token: write
+        pages: write
+    environment:
+      name: prod
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
